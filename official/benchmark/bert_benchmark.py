@@ -29,7 +29,7 @@ from absl.testing import flagsaver
 import tensorflow as tf
 # pylint: enable=g-bad-import-order
 
-from official.bert.benchmark import benchmark_utils
+from official.benchmark import bert_benchmark_utils as benchmark_utils
 from official.nlp import bert_modeling as modeling
 from official.nlp.bert import run_classifier
 from official.utils.misc import distribution_utils
@@ -42,6 +42,7 @@ CLASSIFIER_INPUT_META_DATA_PATH = 'gs://tf-perfzero-data/bert/classification/mrp
 MODEL_CONFIG_FILE_PATH = 'gs://cloud-tpu-checkpoints/bert/tf_20/uncased_L-24_H-1024_A-16/bert_config'
 # pylint: enable=line-too-long
 
+TMP_DIR = os.getenv('TMPDIR')
 FLAGS = flags.FLAGS
 
 
@@ -98,7 +99,7 @@ class BertClassifyBenchmarkReal(BertClassifyBenchmarkBase):
   `benchmark_(number of gpus)_gpu_(dataset type)` format.
   """
 
-  def __init__(self, output_dir=None, **kwargs):
+  def __init__(self, output_dir=TMP_DIR, **kwargs):
     super(BertClassifyBenchmarkReal, self).__init__(output_dir=output_dir)
 
     self.train_data_path = CLASSIFIER_TRAIN_DATA_PATH
@@ -273,7 +274,7 @@ class BertClassifyAccuracy(BertClassifyBenchmarkBase):
   `benchmark_(number of gpus)_gpu_(dataset type)` format.
   """
 
-  def __init__(self, output_dir=None, **kwargs):
+  def __init__(self, output_dir=TMP_DIR, **kwargs):
     self.train_data_path = CLASSIFIER_TRAIN_DATA_PATH
     self.eval_data_path = CLASSIFIER_EVAL_DATA_PATH
     self.bert_config_file = MODEL_CONFIG_FILE_PATH

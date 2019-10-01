@@ -12,23 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Initializes TPU system for TF 2.0."""
+"""Gaussian error linear unit."""
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+import math
 
 import tensorflow as tf
 
 
-def tpu_initialize(tpu_address):
-  """Initializes TPU for TF 2.0 training.
+@tf.keras.utils.register_keras_serializable(package='Text')
+def gelu(x):
+  """Gaussian Error Linear Unit.
 
+  This is a smoother version of the RELU.
+  Original paper: https://arxiv.org/abs/1606.08415
   Args:
-    tpu_address: string, bns address of master TPU worker.
+    x: float Tensor to perform activation.
 
   Returns:
-    A TPUClusterResolver.
+    `x` with the GELU activation applied.
   """
-  cluster_resolver = tf.distribute.cluster_resolver.TPUClusterResolver(
-      tpu=tpu_address)
-  if tpu_address not in ('', 'local'):
-    tf.config.experimental_connect_to_cluster(cluster_resolver)
-  tf.tpu.experimental.initialize_tpu_system(cluster_resolver)
-  return cluster_resolver
+  cdf = 0.5 * (1.0 + tf.tanh(
+      (math.sqrt(2 / math.pi) * (x + 0.044715 * tf.pow(x, 3)))))
+  return x * cdf

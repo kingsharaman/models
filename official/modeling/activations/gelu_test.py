@@ -12,23 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Initializes TPU system for TF 2.0."""
+"""Tests for the Gaussian error linear unit."""
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 import tensorflow as tf
 
+from tensorflow.python.keras import keras_parameterized  # pylint: disable=g-direct-tensorflow-import
+from official.modeling import activations
 
-def tpu_initialize(tpu_address):
-  """Initializes TPU for TF 2.0 training.
 
-  Args:
-    tpu_address: string, bns address of master TPU worker.
+@keras_parameterized.run_all_keras_modes
+class GeluTest(keras_parameterized.TestCase):
 
-  Returns:
-    A TPUClusterResolver.
-  """
-  cluster_resolver = tf.distribute.cluster_resolver.TPUClusterResolver(
-      tpu=tpu_address)
-  if tpu_address not in ('', 'local'):
-    tf.config.experimental_connect_to_cluster(cluster_resolver)
-  tf.tpu.experimental.initialize_tpu_system(cluster_resolver)
-  return cluster_resolver
+  def test_gelu(self):
+    expected_data = [[0.14967535, 0., -0.10032465],
+                     [-0.15880796, -0.04540223, 2.9963627]]
+    gelu_data = activations.gelu([[.25, 0, -.25], [-1, -2, 3]])
+    self.assertAllClose(expected_data, gelu_data)
+
+
+if __name__ == '__main__':
+  tf.test.main()

@@ -123,8 +123,7 @@ class Resnet50CtlAccuracy(CtlBenchmark):
 
     flag_methods = [ctl_common.define_ctl_flags, common.define_keras_flags]
 
-    self.data_dir = ('/readahead/200M/placer/prod/home/distbelief/'
-                     'imagenet-tensorflow/imagenet-2012-tfrecord')
+    self.data_dir = os.path.join(root_data_dir, 'imagenet')
     super(Resnet50CtlAccuracy, self).__init__(
         output_dir=output_dir, flag_methods=flag_methods)
 
@@ -318,8 +317,7 @@ class Resnet50CtlBenchmarkReal(Resnet50CtlBenchmarkBase):
   def __init__(self, output_dir=None, root_data_dir=None, **kwargs):
     def_flags = {}
     def_flags['skip_eval'] = True
-    def_flags['data_dir'] = ('/readahead/200M/placer/prod/home/distbelief/'
-                             'imagenet-tensorflow/imagenet-2012-tfrecord')
+    def_flags['data_dir'] = os.path.join(root_data_dir, 'imagenet')
     def_flags['train_steps'] = 110
     def_flags['log_steps'] = 10
 
